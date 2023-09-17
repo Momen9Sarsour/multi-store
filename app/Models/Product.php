@@ -27,6 +27,9 @@ class Product extends Model
     protected static function booted()
     {
         static::addGlobalScope('store', new StoreScope());
+        static::creating(function(Product $product){
+         $product->Slug =Str::slug($product->name);
+        });
     }
 
     public function scopeActive(Builder $builder){

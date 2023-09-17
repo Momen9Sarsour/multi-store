@@ -2,9 +2,11 @@
 
 use App\Http\Controllers\api\ApiHomeController;
 use App\Http\Controllers\api\ApiHomesController;
+use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\Api\ProductsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\AccessTokenController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,9 +22,32 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
 Route::apiResource('api-products', ProductsController::class);
-Route::prefix('api')->group(function () {
-    Route::get('products', [ApiHomesController::class, 'index']); // جلب المنتجات
-    Route::get('categories/{slug}', [ApiHomesController::class, 'show']); // جلب تفاصيل الفئة بناءً على الاسم الفرعي
-    Route::get('homee', [ApiHomeController::class, 'index']);
+// Route::prefix('api')->group(function () {
+Route::get('first-screen', [ApiHomesController::class, 'index']);
+Route::get('categories/{slug}', [ApiHomesController::class, 'show']);
+Route::get('homee', [ApiHomeController::class, 'index']);
+
+//API route for register new user
+Route::post('/register', [AuthController::class, 'register']);
+//API route for login user
+Route::post('/login', [AuthController::class, 'login']);
+//Protecting Routes
+Route::group(['middleware' => ['auth:sanctum']], function () {
+    Route::get('/profile', function(Request $request) {
+        return auth()->user();
+    });
+    // API route for logout user
+    Route::post('/logout', [AuthController::class, 'logout']);
 });
+
+// });
+
+Route::apiResource('products', ProductsController::class);
+
+Route::post('auth/access-tokens',[AccessTokenController::class,'store'])
+->middleware('guest:sanctum');
+
+Route::delete('auth/access-tokens/{token?}', [AccessTokenController::class, 'destroy'])->middleware('auth:sanctum');
+

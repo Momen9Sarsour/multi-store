@@ -24,7 +24,41 @@ class ProductsController extends Controller
         $products = Product::filter($request->query())
         ->with('category:id,name','store:id,name','tags:id,name')
         ->paginate();
-        return response()->json($products);
+        $responseData = [
+            'products' => ProductResource::collection($products),
+        ];
+   
+        return response()->json($responseData);
+    /*$formatProducts = [];
+
+    foreach ($products as $product) {
+        $formatProducts[] = [
+            'id' => $product->id,
+            'name' => $product->name,
+            'description' => $product->description,
+            'category' => $product->category->name,
+            'store' => $product->store->name,
+            'tags' => $product->tags->pluck('name')->toArray(),
+        ];
+    }
+    
+    return response()->json($formatProducts);*/
+    /*$formattedProducts = [];
+
+    foreach ($products as $product) {
+        $formattedProducts[] = (object)[
+            'id' => $product->id,
+            'name' => $product->name,
+            'description' => $product->description,
+            'category' => $product->category->name,
+            'store' => $product->store->name,
+            'tags' => $product->tags->pluck('name')->toArray(),
+        ];
+    }
+
+   return response()->json($formattedProducts);*/
+
+
      
            
     }
@@ -42,12 +76,16 @@ class ProductsController extends Controller
          'name'=>'required|string|max:255',
          'description'=>'nullable|string|max:255',
          'category_id'=>'required|exists:categories,id',
+         'store_id'=>'required|exists:stores,id',
          'status'=>'in:active,inactive',
          'price'=>'required|numeric|min:0',
          'compare_price'=>'nullable|numeric|gt:price'
+         
         ]);
         $product= Product::create($request->all());
-        return $product;
+        return response()->json($product,201,[
+            'Location'=>route('products.show',$product->id),
+        ]);
     }
 
     /**
@@ -56,9 +94,13 @@ class ProductsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Product $product)
     {
+        return new ProductResource($product);
         //
+        return $product
+        ->load('category:id,name','store:id,name','tags:id,name');
+
     }
 
     /**
@@ -68,9 +110,21 @@ class ProductsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Product $product)
     {
         //
+        $request->validate([
+            'name'=>'sometimes|required|string|max:255',
+            'description'=>'nullable|string|max:255',
+            'category_id'=>'sometimes|required|exists:categories,id',
+            'store_id'=>'sometimes|required|exists:stores,id',
+            'status'=>'in:active,inactive',
+            'price'=>'sometimes|required|numeric|min:0',
+            'compare_price'=>'nullable|numeric|gt:price'  
+           ]);
+
+           $product->update($request->all());
+           return Response::json($product);
     }
 
     /**
@@ -82,5 +136,9 @@ class ProductsController extends Controller
     public function destroy($id)
     {
         //
+        Product::destroy($id);
+    return [
+        'message' => 'Product deleted successfully',
+    ];
     }
 }

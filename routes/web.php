@@ -32,6 +32,7 @@ use App\Http\Controllers\employeeVendor\ProductesController;
 use App\Http\Controllers\employeeVendor\SupportsController;
 use App\Http\Controllers\Front\ProductAllController;
 use App\Http\Controllers\Front\ProductStoreController;
+use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
 /*
 |--------------------------------------------------------------------------
@@ -43,7 +44,9 @@ use App\Http\Controllers\Front\ProductStoreController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-
+// Route::group([
+//     'prefix' => LaravelLocalization::setLocale(),
+//   ], function(){
 Route::get('/', [HomesController::class, 'index'])->name('home');
 Route::get('/category/{slug}', [HomesController::class, 'show'])->name('categ.show');
 Route::get('/category/stores', [CategoryStoreController::class, 'index'])->name('category.stores.index');
@@ -62,13 +65,12 @@ Route::post('cart/empty', [CartController::class, 'emptyCart'])->name('cart.empt
 Route::get('checkout',[CheckOutController::class,'create'])
 ->name('checkout');
 Route::post('checkout',[CheckOutController::class,'store']);
-// routes/web.php
 
 
 
 //
 Route::get('/Stor', [StorController::class, 'index']);
-
+// });
 
 
 Route::get('/dashboard', function () {
@@ -84,7 +86,7 @@ Route::middleware('auth')->group(function () {
 
 //dashboard Admin Store
 
-    Route::middleware(['auth', 'auth.type:admin,employeeAdmin'])->group(function () {
+Route::middleware(['auth', 'auth.type:admin,employeeAdmin'])->group(function () {
     Route::resource('/adminStores', StoreController::class);
     Route::resource('/adminEmployee', EmployeeAdminController::class);
     Route::resource('/adminCategory', CategoryController::class);
@@ -178,5 +180,5 @@ Route::delete('employeeVendor/order/delete/{id}', [OrderesController::class, 'de
 
 require __DIR__.'/auth.php';
 require __DIR__.'/dashboard.php';
-require __DIR__.'/api.php';
+// require __DIR__.'/api.php';
 

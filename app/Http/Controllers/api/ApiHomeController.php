@@ -10,6 +10,11 @@ use App\Models\Product;
 
 class ApiHomeController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:sanctum');
+        
+    }
     use ApiResponseTrait;
     public function index()
     {
@@ -20,6 +25,6 @@ class ApiHomeController extends Controller
         //     'products' => $products,
         //     'categories' => $categories,
         // ], 200);
-        return $this->apiResponse([$products,$categories], 'ok', 200);
+        return $this->apiResponse([ 'products'=> $products, 'categories' => $categories], 'ok', 200);
     }
 }
