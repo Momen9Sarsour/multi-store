@@ -18,7 +18,7 @@
 
                                     <h3><span>{{ Currency::format($product->price)}}</span></h3>
                                     <div class="button">
-                                        <a href="{{ route('prod.show', $product->slug) }}" class="btn">Shop Now</a>
+                                 <a href="{{ route('prod.show', $product->slug) }}" class="btn">Shop Now</a>
                                     </div>
                                 </div>
                             </div>

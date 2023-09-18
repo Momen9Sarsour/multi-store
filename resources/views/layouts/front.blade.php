@@ -7,7 +7,7 @@
     <title>{{$title}}</title>
     <meta name="description" content="" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="shortcut icon" type="image/x-icon"href="{{asset('assets/images/favicon.svg')}}"/>
+    <link rel="shortcut icon" type="image/x-icon" href="{{asset('assets/images/favicon.svg')}}" />
 
     <!-- ========================= CSS here ========================= -->
     <link rel="stylesheet" href="{{asset('assets/css/bootstrap.min.css')}}" />
@@ -16,7 +16,7 @@
     <link rel="stylesheet" href="{{asset('assets/css/glightbox.min.css')}}" />
     <link rel="stylesheet" href="{{asset('assets/css/main.css')}}" />
     <link rel="stylesheet" href="{{asset('assets/css/stylePage1.css')}}" />
-   
+
     <link rel="stylesheet" href="path-to/owl.carousel.min.css">
     <link rel="stylesheet" href="path-to/owl.theme.default.min.css">
 
@@ -65,15 +65,13 @@
                                 </li>
                                 <li>
                                     <div class="select-position">
-                                        <select id="select5">
-                                            <option value="0" selected>English</option>
-                                            <option value="1">Español</option>
-                                            <option value="2">Filipino</option>
-                                            <option value="3">Français</option>
-                                            <option value="4">العربية</option>
-                                            <option value="5">हिन्दी</option>
-                                            <option value="6">বাংলা</option>
-                                        </select>
+                                        <form action="{{ URL::current() }}" method="get">
+                                            <select name="locale" onchange="this.form.submit()">
+                                                {{-- @foreach(LaravelLocalization::getSupportedLocales() as $localeCode => $properties)
+                                                <option value="{{ $localeCode }}" @selected($localeCode==App::currentLocale())>{{ $properties['native'] }}</option>
+                                                @endforeach --}}
+                                            </select>
+                                        </form>
                                     </div>
                                 </li>
                             </ul>
@@ -82,26 +80,44 @@
                     <div class="col-lg-4 col-md-4 col-12">
                         <div class="top-middle">
                             <ul class="useful-links">
-                                <li><a href="{{ route('home') }}">Home</a></li>
-                                <li><a href="about-us.html">About Us</a></li>
-                                <li><a href="contact.html">Contact Us</a></li>
+                                <li><a href="{{ route('home') }}">
+                                        {{trans('Home')}}</a></li>
+                                <li><a href="about-us.html"> {{trans('About Us')}}</a></li>
+                                <li><a href="contact.html"> {{trans('Contact Us')}}</a></li>
                             </ul>
                         </div>
                     </div>
                     <div class="col-lg-4 col-md-4 col-12">
                         <div class="top-end">
+                            @auth
                             <div class="user">
                                 <i class="lni lni-user"></i>
-                                Hello
+                                {{Auth::user()->name}}
                             </div>
                             <ul class="user-login">
                                 <li>
-                                    <a href="{{route('login')}}">Sign In</a>
+                                    <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout').submit()">Sign Out</a>
+                                </li>
+                                <form action="{{route('logout')}}" method="post" style="display:none" id="logout">
+                                    @csrf
+                                </form>
+                            </ul>
+                            @else
+                            <div class="user">
+                                <i class="lni lni-user"></i>
+                                {{Lang::get('Hello')}}
+                            </div>
+                            <ul class="user-login">
+                                <li>
+                                    <a href="{{route('login')}}">
+                                        {{Lang::get('Sign In')}}</a>
                                 </li>
                                 <li>
-                                    <a href="{{route('register')}}">Register</a>
+                                    <a href="{{route('register')}}">
+                                        {{Lang::get('Register')}}</a>
                                 </li>
                             </ul>
+                            @endauth
                         </div>
                     </div>
                 </div>
@@ -115,7 +131,7 @@
                     <div class="col-lg-3 col-md-3 col-7">
                         <!-- Start Header Logo -->
                         <a class="navbar-brand" href="index.html">
-                        <img src="{{asset('assets/images/logo/logo.svg')}}" alt="Logo">
+                            <img src="{{asset('assets/images/logo/logo.svg')}}" alt="Logo">
                         </a>
                         <!-- End Header Logo -->
                     </div>
@@ -162,7 +178,7 @@
                                         <span class="total-items">0</span>
                                     </a>
                                 </div>
-                                <x-cart-menu/>
+                                <x-cart-menu />
                             </div>
                         </div>
                     </div>
@@ -209,9 +225,7 @@
                         <!-- End Mega Category Menu -->
                         <!-- Start Navbar -->
                         <nav class="navbar navbar-expand-lg">
-                            <button class="navbar-toggler mobile-menu-btn" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-                                aria-expanded="false" aria-label="Toggle navigation">
+                            <button class="navbar-toggler mobile-menu-btn" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                                 <span class="toggler-icon"></span>
                                 <span class="toggler-icon"></span>
                                 <span class="toggler-icon"></span>
@@ -222,10 +236,7 @@
                                         <a href="{{ route('home') }}" aria-label="Toggle navigation">Home</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="dd-menu active collapsed" href="javascript:void(0)"
-                                            data-bs-toggle="collapse" data-bs-target="#submenu-1-2"
-                                            aria-controls="navbarSupportedContent" aria-expanded="false"
-                                            aria-label="Toggle navigation">Pages</a>
+                                        <a class="dd-menu active collapsed" href="javascript:void(0)" data-bs-toggle="collapse" data-bs-target="#submenu-1-2" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">Pages</a>
                                         <ul class="sub-menu collapse" id="submenu-1-2">
                                             <li class="nav-item"><a href="about-us.html">About Us</a></li>
                                             <li class="nav-item"><a href="faq.html">Faq</a></li>
@@ -236,9 +247,7 @@
                                         </ul>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="dd-menu collapsed" href="javascript:void(0)" data-bs-toggle="collapse"
-                                            data-bs-target="#submenu-1-3" aria-controls="navbarSupportedContent"
-                                            aria-expanded="false" aria-label="Toggle navigation">Shop</a>
+                                        <a class="dd-menu collapsed" href="javascript:void(0)" data-bs-toggle="collapse" data-bs-target="#submenu-1-3" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">Shop</a>
                                         <ul class="sub-menu collapse" id="submenu-1-3">
                                             <li class="nav-item"><a href="product-grids.html">Shop Grid</a></li>
                                             <li class="nav-item"><a href="product-list.html">Shop List</a></li>
@@ -248,9 +257,7 @@
                                         </ul>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="dd-menu collapsed" href="javascript:void(0)" data-bs-toggle="collapse"
-                                            data-bs-target="#submenu-1-4" aria-controls="navbarSupportedContent"
-                                            aria-expanded="false" aria-label="Toggle navigation">Blog</a>
+                                        <a class="dd-menu collapsed" href="javascript:void(0)" data-bs-toggle="collapse" data-bs-target="#submenu-1-4" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">Blog</a>
                                         <ul class="sub-menu collapse" id="submenu-1-4">
                                             <li class="nav-item"><a href="blog-grid-sidebar.html">Blog Grid Sidebar</a>
                                             </li>
@@ -310,7 +317,7 @@
                         <div class="col-lg-3 col-md-4 col-12">
                             <div class="footer-logo">
                                 <a href="index.html">
-                                <img src="{{asset('assets/images/logo/white-logo.svg')}}" alt="#">
+                                    <img src="{{asset('assets/images/logo/white-logo.svg')}}" alt="#">
                                 </a>
                             </div>
                         </div>
@@ -424,8 +431,7 @@
                         </div>
                         <div class="col-lg-4 col-12">
                             <div class="copyright">
-                                <p>Designed and Developed by<a href="https://graygrids.com/" rel="nofollow"
-                                        target="_blank">GrayGrids</a></p>
+                                <p>Designed and Developed by<a href="https://graygrids.com/" rel="nofollow" target="_blank">GrayGrids</a></p>
                             </div>
                         </div>
                         <div class="col-lg-4 col-12">
