@@ -29,7 +29,7 @@ class AuthController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return $this->apiResponse(['errors' => $validator->errors()], 'invaled' , 422);
+            return $this->apiResponse([],  $validator->errors() , 422);
         }
 
         $data = $request->except('image');
