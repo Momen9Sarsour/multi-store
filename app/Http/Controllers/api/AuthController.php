@@ -22,10 +22,10 @@ class AuthController extends Controller
     {
         // Validate user registration data
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
+            // 'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8',
-            'device_name' => 'string|min:6',
+            // 'password' => 'required|string|min:8',
+            // 'device_name' => 'string|min:6',
         ]);
         // $errors = $validator->errors();
         // $errorMessages = $errors->all();
