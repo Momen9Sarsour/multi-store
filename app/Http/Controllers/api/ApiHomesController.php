@@ -74,27 +74,27 @@ class ApiHomesController extends Controller
 
             [
                 'name' => 'products',
-                'type' => 'header',
+                'type' => 'slider',
                 'items' => $products
             ],
 
             [
-                'name' => 'productBest',
-                'type' => 'slider',
+                'name' => 'product Best',
+                'type' => 'products',
                 'items' => $productBest
             ],
             [
-                'name' => 'productFeatured',
-                'type' => 'slider-left',
+                'name' => 'product Featured',
+                'type' => 'slider',
                 'items' => $productFeatured
             ],
             [
                 'name' => 'highPricedProducts',
-                'type' => 'slider-buttom',
+                'type' => 'slider',
                 'items' => $highPricedProducts
             ],
             [
-                'name' => 'storeRated',
+                'name' => 'store Rated',
                 'type' => 'stores',
                 'items' => $storeRated
             ],
