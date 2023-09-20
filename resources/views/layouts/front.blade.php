@@ -72,56 +72,65 @@
                                                 @endforeach --}}
                                             </select>
                                         </form>
+                                        {{-- <select id="select5">
+                                            <option value="0" selected>English</option>
+                                            <option value="1">Español</option>
+                                            <option value="2">Filipino</option>
+                                            <option value="3">Français</option>
+                                            <option value="4">العربية</option>
+                                            <option value="5">हिन्दी</option>
+                                            <option value="6">বাংলা</option>
+                                        </select> --}}
                                     </div>
                                 </li>
                             </ul>
                         </div>
-                    </div>
-                    <div class="col-lg-4 col-md-4 col-12">
-                        <div class="top-middle">
-                            <ul class="useful-links">
-                                <li><a href="{{ route('home') }}">
-                                        {{trans('Home')}}</a></li>
-                                <li><a href="about-us.html"> {{trans('About Us')}}</a></li>
-                                <li><a href="contact.html"> {{trans('Contact Us')}}</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-md-4 col-12">
-                        <div class="top-end">
-                            @auth
-                            <div class="user">
-                                <i class="lni lni-user"></i>
-                                {{Auth::user()->name}}
-                            </div>
-                            <ul class="user-login">
-                                <li>
-                                    <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout').submit()">Sign Out</a>
-                                </li>
-                                <form action="{{route('logout')}}" method="post" style="display:none" id="logout">
-                                    @csrf
-                                </form>
-                            </ul>
-                            @else
-                            <div class="user">
-                                <i class="lni lni-user"></i>
-                                {{Lang::get('Hello')}}
-                            </div>
-                            <ul class="user-login">
-                                <li>
-                                    <a href="{{route('login')}}">
-                                        {{Lang::get('Sign In')}}</a>
-                                </li>
-                                <li>
-                                    <a href="{{route('register')}}">
-                                        {{Lang::get('Register')}}</a>
-                                </li>
-                            </ul>
-                            @endauth
-                        </div>
-                    </div>
+                </div>
+            <div class="col-lg-4 col-md-4 col-12">
+                <div class="top-middle">
+                    <ul class="useful-links">
+                        <li><a href="{{ route('home') }}">
+                                {{trans('Home')}}</a></li>
+                        <li><a href="about-us.html"> {{trans('About Us')}}</a></li>
+                        <li><a href="contact.html"> {{trans('Contact Us')}}</a></li>
+                    </ul>
                 </div>
             </div>
+            <div class="col-lg-4 col-md-4 col-12">
+                <div class="top-end">
+                    @auth
+                    <div class="user">
+                        <i class="lni lni-user"></i>
+                        {{Auth::user()->name}}
+                    </div>
+                    <ul class="user-login">
+                        <li>
+                            <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout').submit()">Sign Out</a>
+                        </li>
+                        <form action="{{route('logout')}}" method="post" style="display:none" id="logout">
+                            @csrf
+                        </form>
+                    </ul>
+                    @else
+                    <div class="user">
+                        <i class="lni lni-user"></i>
+                        {{Lang::get('Hello')}}
+                    </div>
+                    <ul class="user-login">
+                        <li>
+                            <a href="{{route('login')}}">
+                                {{Lang::get('Sign In')}}</a>
+                        </li>
+                        <li>
+                            <a href="{{route('register')}}">
+                                {{Lang::get('Register')}}</a>
+                        </li>
+                    </ul>
+                    @endauth
+                </div>
+            </div>
+        </div>
+        </div>
         </div>
         <!-- End Topbar -->
         <!-- Start Header Middle -->

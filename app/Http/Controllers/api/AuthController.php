@@ -11,6 +11,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Response;
+use Laravel\Sanctum\PersonalAccessToken;
 
 class AuthController extends Controller
 {
@@ -18,11 +20,12 @@ class AuthController extends Controller
 
     public function register(Request $request)
     {
-        // التحقق من صحة البيانات المرسلة
+        // Validate user registration data
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8',
+            'device_name' => 'string|min:6',
         ]);
 
         if ($validator->fails()) {
@@ -46,21 +49,30 @@ class AuthController extends Controller
         $user->type = "user";
         $user->save();
 
-        // إنشاء توكن للمستخدم
-        $token = $user->createToken('auth_token')->plainTextToken;
+        // Generate a token for the new user
+        $device_name = $request->input('device_name', $request->userAgent());
+        $token = $user->createToken($device_name)->plainTextToken;
 
-        return $this->apiResponse([
+       /* return $this->apiResponse([
             'data' => $user,
             'token' => $token,
             // 'token_type' => $user->type,
             'type' => $user->type,
         ],
-         'ok', 201);
+         'ok', 201); */
+        return $this->apiResponse(
+            [
+                'code' => 1,
+                'user' => $user,
+                'access_token' => $token,
+            ],
+            'ok', 201);
     }
+
 
     public function login(Request $request)
     {
-        // التحقق من بيانات تسجيل الدخول
+       /* // التحقق من بيانات تسجيل الدخول
         $credentials = [
             'email' => $request->email,
             'password' => $request->password,
@@ -83,9 +95,9 @@ class AuthController extends Controller
         // فشلت عملية تسجيل الدخول
         return $this->apiResponse([ ],
         'The Email and Password is error', 401);
-    }
+    } */
 
-    public function logout()
+   /* public function logout()
     {
         // حذف جميع توكنات المستخدم
         auth()->user()->tokens->each(function ($token, $key) {
@@ -94,103 +106,108 @@ class AuthController extends Controller
 
         return $this->apiResponse([ ],
          'Logged out successfully', 200);
+      }
+   */
+
+
+        // Validate user login data
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|string|email|max:255',
+            'password' => 'required|string|min:6',
+        ]);
+
+        $credentials = [
+            'email' => $request->email,
+            'password' => $request->password,
+        ];
+
+        if ($validator->fails()) {
+            return Response::json(['errors' => $validator->errors()], 422);
+        }
+        // Attempt to authenticate the user
+        // $credentials = $request->only('email', 'password');
+
+        if (Auth::attempt($credentials)) {
+            $user = Auth::user();
+            // $device_name = $request->input('device_name', $request->userAgent());
+            $token = $user->createToken('auth_token')->plainTextToken;
+
+            return $this->apiResponse([
+                'code' => 1,
+                'user' => $user,
+                'access_token' => $token,
+            ],
+             'ok', 200);
+
+            // return Response::json([
+            //     'code' => 1,
+            //     'user' => $user,
+            //     'access_token' => $token,
+            // ], 200);
+        }
+
+        return $this->apiResponse([
+            'code' => 0,
+            'message' => 'Invalid credentials',
+        ],
+         'The Email and Password is error', 401);
+        // return Response::json([
+        //     'code' => 0,
+        //     'message' => 'Invalid credentials',
+        // ], 401);
+    }
+
+
+    public function logOut(Request $request, $token = null)
+    {
+        $user = $request->user();
+
+        // If no specific token is provided, revoke all tokens
+       /* if ($token === null) {
+            $user->tokens()->delete();
+
+            return Response::json([
+                'code' => 1,
+                'message' => 'All tokens revoked successfully',
+            ], 200);
+        }
+      */
+
+        // Attempt to find and revoke the specified token
+        $personalAccessToken = PersonalAccessToken::findToken($token);
+
+        if (
+            $personalAccessToken &&
+            $user->id == $personalAccessToken->tokenable_id &&
+            get_class($user) == $personalAccessToken->tokenable_type
+        ) {
+            $personalAccessToken->delete();
+
+            return $this->apiResponse([
+                'code' => 1,
+                'message' => 'Token revoked successfully',
+            ],
+             'successfully', 200);
+
+            // return Response::json([
+            //     'code' => 1,
+            //     'message' => 'Token revoked successfully',
+            // ], 200);
+        }
+
+        // If the specified token is not found or does not belong to the user, return an error
+
+        return $this->apiResponse([
+            'code' => 0,
+            'message' => 'Invalid token',
+        ],
+         'Invalid', 401);
+        // return Response::json([
+        //     'code' => 0,
+        //     'message' => 'Invalid token',
+        // ], 401);
     }
 }
 
 
-
-/* namespace App\Http\Controllers\API;
-
-    use App\Http\Controllers\api\ApiResponseTrait;
-    use App\Http\Controllers\Controller;
-    use Illuminate\Http\Request;
-    use Illuminate\Support\Facades\Hash;
-    // use Auth;
-    use Illuminate\Support\Facades\Validator;
-    use App\Models\User;
-    use Illuminate\Support\Facades\Auth;
-
-    class AuthController extends Controller
-    {
-        use ApiResponseTrait;
-
-        public function register(Request $request)
-        {
-            $validator = Validator::make($request->all(),[
-                'name' => 'required|string|max:255',
-                'email' => 'required|string|email|max:255|unique:users',
-                'password' => 'required|string|min:8'
-            ]);
-
-            if($validator->fails()){
-                return response()->json($validator->errors());
-            }
-
-            $user = User::create([
-                'name' => $request->name,
-                'email' => $request->email,
-                'password' => Hash::make($request->password)
-            ]);
-
-            $token = $user->createToken('auth_token')->plainTextToken;
-
-            return response()
-                ->json(['data' => $user,'access_token' => $token, 'token_type' => 'Bearer', ]);
-        }
-        /*
-            public function login(Request $request)
-            {
-                if (!FacadesAuth::attempt($request->only('email', 'password')))
-                {
-                    return response()
-                        ->json(['message' => 'Unauthorized'], 401);
-                }
-
-                $user = User::where('email', $request['email'])->firstOrFail();
-
-                $token = $user->createToken('auth_token')->plainTextToken;
-
-                return $this->apiResponse(
-                    ['message' => 'Hi '.$user->name.' welcome to home','access_token' => $token, 'token_type' => 'Bearer' ],
-                'ok', 200,
-                    );
-
-                    // return $this->apiResponse([
-                    //     'category' => $category,
-                    //     'categories' => $categories,
-                    // ],
-                    //  'ok', 200);
-                }
-        */
-    /*     public function login(Request $request)
-        {
-            $credentials = [
-                'email' => $request->email,
-                'password' => $request->password,
-            ];
-
-            if (Auth::attempt($credentials)) {
-                $user = Auth::user();
-                $token = $user->createToken('multi-store')->accessToken;
-
-                return response()->json(['token' => $token , 'to' => $user->accessToken ], 200);
-            }
-
-            return response()->json(['message' => 'Unauthorized'], 401);
-        }
-
-
-
-
-        // method for user logout and delete token
-        public function logout()
-        {
-            auth()->user()->tokens()->delete();
-
-            return [
-                'message' => 'You have successfully logged out and the token was successfully deleted'
-            ];
-        }
-    }
-*/
 

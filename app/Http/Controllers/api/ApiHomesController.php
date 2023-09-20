@@ -39,12 +39,68 @@ class ApiHomesController extends Controller
         //     'highPricedProducts' => $highPricedProducts,
         //     'storeRated' => $storeRated,
         // ], 200);
+
+
+        /*
+            [
+            {
+                "name"  : "",
+                "type": 'products',
+                "items"  : [
+
+
+                ]
+            },{
+                "name"  : "best selleer",
+                "type": 'banner',
+                "items"  : [
+
+
+                ]
+            },{
+                "name"  : "",
+                "type": 'items',
+                "items"  : [
+                    'id' : 'jgjg'
+
+                ]
+
+            }
+            ]
+
+        */
+
+        $groups = [
+
+            [
+                'name' => 'products',
+                'type' => 'header',
+                'items' => $products
+            ],
+
+            [
+                'name' => 'productBest',
+                'type' => 'slider',
+                'items' => $productBest
+            ],
+            [
+                'name' => 'productFeatured',
+                'type' => 'slider-left',
+                'items' => $productFeatured
+            ],
+            [
+                'name' => 'highPricedProducts',
+                'type' => 'slider-buttom',
+                'items' => $highPricedProducts
+            ],
+            [
+                'name' => 'storeRated',
+                'type' => 'stores',
+                'items' => $storeRated
+            ],
+    ];
         return $this->apiResponse([
-            'products' =>$products,
-            'productBest' => $productBest,
-            'productFeatured' =>$productFeatured,
-            'highPricedProducts' => $highPricedProducts,
-            'storeRated' => $storeRated
+            $groups
         ],
         'ok', 200);
     }

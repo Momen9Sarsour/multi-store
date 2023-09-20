@@ -10,11 +10,11 @@ use App\Models\Product;
 
 class ApiHomeController extends Controller
 {
-    public function __construct()
+    /*public function __construct()
     {
         $this->middleware('auth:sanctum');
         
-    }
+    }*/
     use ApiResponseTrait;
     public function index()
     {
