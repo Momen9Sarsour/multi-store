@@ -35,7 +35,7 @@ class AuthController extends Controller
         $errorText = implode(', ', $errorMessages);
 
         if ($validator->fails()) {
-            return $this->apiResponse('',  $errorText , 422);
+            return $this->apiResponse('', $errorText , 422);
         }
 
         $data = $request->except('image');
@@ -59,13 +59,6 @@ class AuthController extends Controller
         $device_name = $request->input('device_name', $request->userAgent());
         $token = $user->createToken($device_name)->plainTextToken;
 
-       /* return $this->apiResponse([
-            'data' => $user,
-            'token' => $token,
-            // 'token_type' => $user->type,
-            'type' => $user->type,
-        ],
-         'ok', 201); */
         return $this->apiResponse(
             [
                 'code' => 1,
@@ -78,43 +71,6 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-       /* // التحقق من بيانات تسجيل الدخول
-        $credentials = [
-            'email' => $request->email,
-            'password' => $request->password,
-        ];
-
-        if (Auth::attempt($credentials)) {
-            // نجحت عملية تسجيل الدخول
-            $user = Auth::user();
-            // $token = $user->createToken('auth_token')->accessToken;
-            $token = $user->createToken('auth_token')->plainTextToken;
-            // $token = sha1($user->id . time());
-
-            return $this->apiResponse([
-                'user' => $user,
-                'token' => $token ,
-            ],
-             'ok', 200);
-        }
-
-        // فشلت عملية تسجيل الدخول
-        return $this->apiResponse([ ],
-        'The Email and Password is error', 401);
-    } */
-
-   /* public function logout()
-    {
-        // حذف جميع توكنات المستخدم
-        auth()->user()->tokens->each(function ($token, $key) {
-            $token->delete();
-        });
-
-        return $this->apiResponse([ ],
-         'Logged out successfully', 200);
-      }
-   */
-
 
         // Validate user login data
         $validator = Validator::make($request->all(), [
@@ -145,11 +101,6 @@ class AuthController extends Controller
             ],
              'ok', 200);
 
-            // return Response::json([
-            //     'code' => 1,
-            //     'user' => $user,
-            //     'access_token' => $token,
-            // ], 200);
         }
 
         return $this->apiResponse([
@@ -157,63 +108,16 @@ class AuthController extends Controller
             'message' => 'Invalid credentials',
         ],
          'The Email and Password is error', 401);
-        // return Response::json([
-        //     'code' => 0,
-        //     'message' => 'Invalid credentials',
-        // ], 401);
     }
 
 
-    public function logOut(Request $request, $token = null)
-    {
+    public function logOut(Request $request)
+      {
         $user = $request->user();
+        $user->currentAccessToken()->delete();
+        return response()->json(['message' => 'Logged out successfully']);  
+        
+        
+    }   
 
-        // If no specific token is provided, revoke all tokens
-       /* if ($token === null) {
-            $user->tokens()->delete();
-
-            return Response::json([
-                'code' => 1,
-                'message' => 'All tokens revoked successfully',
-            ], 200);
-        }
-      */
-
-        // Attempt to find and revoke the specified token
-        $personalAccessToken = PersonalAccessToken::findToken($token);
-
-        if (
-            $personalAccessToken &&
-            $user->id == $personalAccessToken->tokenable_id &&
-            get_class($user) == $personalAccessToken->tokenable_type
-        ) {
-            $personalAccessToken->delete();
-
-            return $this->apiResponse([
-                'code' => 1,
-                'message' => 'Token revoked successfully',
-            ],
-             'successfully', 200);
-
-            // return Response::json([
-            //     'code' => 1,
-            //     'message' => 'Token revoked successfully',
-            // ], 200);
-        }
-
-        // If the specified token is not found or does not belong to the user, return an error
-
-        return $this->apiResponse([
-            'code' => 0,
-            'message' => 'Invalid token',
-        ],
-         'Invalid', 401);
-        // return Response::json([
-        //     'code' => 0,
-        //     'message' => 'Invalid token',
-        // ], 401);
-    }
 }
-
-
-

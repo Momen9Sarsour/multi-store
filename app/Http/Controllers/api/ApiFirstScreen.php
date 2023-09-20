@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 
 // HomeController.php
-class ApiHomesController extends Controller
+class ApiFirstScreen extends Controller
 {
 
     use ApiResponseTrait;
@@ -32,46 +32,16 @@ class ApiHomesController extends Controller
             ->orderByDesc('order_count')
             ->get();
 
-        // return response()->json([
-        //     'products' => $products,
-        //     'productBest' => $productBest,
-        //     'productFeatured' => $productFeatured,
-        //     'highPricedProducts' => $highPricedProducts,
-        //     'storeRated' => $storeRated,
-        // ], 200);
-
-
-        /*
-            [
-            {
-                "name"  : "",
-                "type": 'products',
-                "items"  : [
-
-
-                ]
-            },{
-                "name"  : "best selleer",
-                "type": 'banner',
-                "items"  : [
-
-
-                ]
-            },{
-                "name"  : "",
-                "type": 'items',
-                "items"  : [
-                    'id' : 'jgjg'
-
-                ]
-
-            }
-            ]
-
-        */
+            $categories = Category::with('store')->get();
+            $groupedCategories = $categories->groupBy('name');
 
         $groups = [
 
+            [
+                'name' => 'categories',
+                'type' => 'slider',
+                'items' => $groupedCategories
+            ],
             [
                 'name' => 'products',
                 'type' => 'slider',

@@ -10,7 +10,6 @@ trait ApiResponseTrait
             'message'=>$message,
             'status'=>$status
         ];
-
         return response($array, $status);
     }
 }
