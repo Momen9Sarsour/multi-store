@@ -27,11 +27,15 @@ class AuthController extends Controller
             'password' => 'required|string|min:8',
             'device_name' => 'string|min:6',
         ]);
-        $errors = $validator->errors();
-        $errorMessages = $errors->all();
+        // $errors = $validator->errors();
+        // $errorMessages = $errors->all();
+        $errorMessages = $validator->errors()->all();
+
+        // دمج الأخطاء إلى نص واحد بفصلها بفاصلة
+        $errorText = implode(', ', $errorMessages);
 
         if ($validator->fails()) {
-            return $this->apiResponse('',  $errorMessages , 422);
+            return $this->apiResponse('',  $errorText , 422);
         }
 
         $data = $request->except('image');
