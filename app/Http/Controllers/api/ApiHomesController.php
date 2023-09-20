@@ -89,7 +89,7 @@ class ApiHomesController extends Controller
                 'items' => $productFeatured
             ],
             [
-                'name' => 'highPricedProducts',
+                'name' => 'high Priced Products',
                 'type' => 'slider',
                 'items' => $highPricedProducts
             ],
