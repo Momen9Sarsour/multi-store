@@ -25,10 +25,10 @@ class StoresController extends Controller
         ->limit(2)->active()->quantity()->largediscounted()->get();
         $highestPricedProducts = Product::where('store_id', $store->id)
         ->orderByDesc('price')->limit(1)->active()->quantity()->get();
-        
+
         return view('front.home', compact('store', 'products', 'categories', 'discountedProducts', 'fiftyPercentOfferProducts', 'featuredProducts','largeDiscountProducts','highestPricedProducts'));
     }
-      
+
     public function showCategories(Store $store){
     $categorystore = Category::where('store_id', $store->id)->paginate(12);
     return view('front.CategoryStore', compact('categorystore'));

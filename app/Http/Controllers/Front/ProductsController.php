@@ -4,35 +4,41 @@ namespace App\Http\Controllers\Front;
 
 use Exception;
 use App\Models\Product;
+use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 class ProductsController extends Controller
 {
     //
-    public function index(Request $request){
-        // $products = Product::where('status', 'active')->paginate(9);
-        // $query = Product::query();
-        // // name filter
-        // if ($request->has('search')) {
-        //     $query->where('name', 'like', '%' . $request->input('search') . '%');
-        // }
+    // public function index(Request $request){
+    //     $query = Product::where('status', 'active');
 
-        // $product = $query->where('status', 'active')->paginate(9);
-        // $search = $request->search;
-        // return view('front.products.index', compact('product','search'));
-        $query = Product::where('status', 'active');
+    //     //  name filter
+    //     if ($request->has('search')) {
+    //         $query->where('name', 'like', '%' . $request->input('search') . '%');
+    //     }
 
-        //  name filter
-        if ($request->has('search')) {
-            $query->where('name', 'like', '%' . $request->input('search') . '%');
-        }
+    //     $product = $query->paginate(9);
+    //     $search = $request->search;
 
-        $product = $query->paginate(9);
-        $search = $request->search;
+    //     return view('front.products.index', compact('product', 'search'));
+    // }
 
-        return view('front.products.index', compact('product', 'search'));
-    }
+    public function index(Request $request, $categorySlug)
+{
+    // Retrieve the category based on the slug
+    $category = Category::where('slug', $categorySlug)->firstOrFail();
+
+    // Query products belonging to the category
+    $products = $category->products()
+        ->where('status', 'active')
+        ->paginate(9);
+
+    $search = $request->input('search', ''); // Get the search query
+
+    return view('front.products.index', compact('products', 'search', 'category'));
+}
 
     public function show_product($id)
     {

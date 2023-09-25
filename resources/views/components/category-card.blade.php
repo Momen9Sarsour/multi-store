@@ -7,10 +7,11 @@
             </a>
         </h3>
         <ul>
-            @foreach ($category->products as $product)
+            @foreach ($category->products->take(4) as $product)
                 <li><a href="{{ route('prod.show', $product->slug) }}">{{$product->name}}</a></li>
             @endforeach
-            <li><a href="{{ route('products-show'), $category->id }}">View All</a></li>
+            {{-- <li><a href="{{ route('products-show'), $category->id }}">View All</a></li> --}}
+            <li><a href="{{ route('products-show', $category->slug) }}">View All</a></li>
         </ul>
         <div class="images">
             <img width="200" src="{{asset('storage/'.$category->image)}}" alt="#">

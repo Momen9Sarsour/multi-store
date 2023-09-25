@@ -78,7 +78,7 @@
                                 </li>
                             </ul>
                         </div>
-                    </div>                   
+                    </div>
                     <div class="col-lg-4 col-md-4 col-12">
                         <div class="top-middle">
                             <ul class="useful-links">
@@ -112,6 +112,10 @@
                         <li>
                             <a href="{{route('login')}}">
                                 {{Lang::get('Sign In')}}</a>
+                        </li>
+                        <li>
+                            <a href="{{route('addStore')}}">
+                                {{Lang::get('Add Store')}}</a>
                         </li>
                         <li>
                             <a href="{{route('register')}}">

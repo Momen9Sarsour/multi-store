@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers\Front;
 
-use App\Models\Product;
+use App\Models\User;
 use App\Models\Store;
+use App\Models\Product;
 use App\Models\Category;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redis;
 
 class HomesController extends Controller
@@ -37,9 +40,10 @@ class HomesController extends Controller
                 'stores.id',
                 'stores.name',
                 'stores.image',
+                'stores.slug',
                 DB::raw('COUNT(orders.id) as order_count')
             )
-            ->groupBy('stores.id', 'stores.name', 'stores.image')
+            ->groupBy('stores.id', 'stores.name', 'stores.image','stores.slug')
             ->orderByDesc('order_count')
             ->get();
 
@@ -61,6 +65,68 @@ class HomesController extends Controller
         $searchName = $request->searchName;
 
         return view('front.categories.show', compact('category', 'categories', 'searchName'));
+    }
+
+    // Add store New
+
+    public function create()
+    {
+        return view('front.createStore');
+    }
+    public function store(Request $request){
+        // dd($request->all());
+        $request->validate([
+            'name' =>'required',
+            'slug'=>'nullable',
+            'image'=>'nullable',
+            'description'=>'nullable',
+            'email' =>'required',
+            'password' =>'required',
+            'phone' =>'required',
+        ]);
+
+        $data = $request->all();
+        $data = $request->except('image');
+        if($request->image){
+            $data['image']= $this->uploadImage($request);
+        }else{
+            $data['image']= "";
+        };
+
+        // store data
+        $store = new Store();
+        $store->name = $request->name;
+        $store->slug = Str::slug($request->input('name'));
+        $store->image = $data['image'];
+        $store->description = $request->description;
+        $store->email = $request->email;
+        $store->password = $request->password;
+        $store->phone = $request->phone;
+        $store->status = $request->status;
+        $store->save();
+
+        $user = new User();
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->password = Hash::make($request->password);
+        $user->store_id = $store->id;
+        $user->type = "vendor";
+        $user->save();
+
+        session()->flash('message', 'Store added!');
+        return redirect()->route('vendor');
+    }
+
+    protected function uploadImage(Request $request){
+
+        if(!$request->hasFile('image')){
+        return;
+        }
+        $file =  $request->file('image');
+        $path =  $file->store('uploads',[
+            'disk'=>'public'
+        ]);
+        return $path;
     }
 
 }

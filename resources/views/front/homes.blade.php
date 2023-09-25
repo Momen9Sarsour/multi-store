@@ -134,26 +134,28 @@
             @foreach ($storeRated as $index => $store)
             <div class="col-md-6 mb-3"> <!-- Use col-md-6 for two cards per row with margin-bottom -->
                 <div class="card">
-                    <div class="row g-0">
-                        <div class="col-md-4 imageRated">
-                            <img src="{{ $store->image_url }}" class="img-fluid rounded-start" alt="{{ $store->name }}">
-                        </div>
-                        <div class="col-md-8">
-                            <div class="card-body">
-                                <h5 class="card-title">{{ $store->name }}</h5>
-                                <div class="rating">
-                                    <div class="stars">
-                                        <i class="lni lni-star-filled fad1"></i>
-                                        <i class="lni lni-star-filled fad1"></i>
-                                        <i class="lni lni-star-filled fad1"></i>
-                                        <i class="lni lni-star-filled fad1"></i>
-                                        <i class="lni lni-star-filled fad1"></i>
+                    <a href="{{ url('/store/' . $store->slug) }}">
+                        <div class="row g-0">
+                            <div class="col-md-4 imageRated">
+                                <img src="{{ $store->image_url }}" class="img-fluid rounded-start" alt="{{ $store->name }}">
+                            </div>
+                            <div class="col-md-8">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ $store->name }}</h5>
+                                    <div class="rating">
+                                        <div class="stars">
+                                            <i class="lni lni-star-filled fad1"></i>
+                                            <i class="lni lni-star-filled fad1"></i>
+                                            <i class="lni lni-star-filled fad1"></i>
+                                            <i class="lni lni-star-filled fad1"></i>
+                                            <i class="lni lni-star-filled fad1"></i>
+                                        </div>
+                                        <span class="ml-2">5.0 Review(s)</span>
                                     </div>
-                                    <span class="ml-2">5.0 Review(s)</span>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </a>
                 </div>
             </div>
 

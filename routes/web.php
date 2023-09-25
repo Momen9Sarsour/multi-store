@@ -51,13 +51,19 @@ use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 //   ], function(){
 Route::get('/', [HomesController::class, 'index'])->name('home');
 Route::get('/category/{slug}', [HomesController::class, 'show'])->name('categ.show');
+Route::get('/createStore', [HomesController::class, 'create'])->name('addStore');
+Route::post('/Store/store', [HomesController::class, 'store'])->name('storeStore');
+
 Route::get('/category/stores', [CategoryStoreController::class, 'index'])->name('category.stores.index');
 Route::get('/category/stores/{slug}', [CategoryStoreController::class, 'show'])->name('categor.show');
 Route::get('/all-products',[ProductAllController::class, 'index'])->name('all-products');
 Route::get('/storeproductt/{store}', [ProductStoreController::class, 'index'])->name('storeproductt');
 Route::get('/featured-products',[ProductAllController::class, 'showproduct'])->name('best-products');
 Route::get('/products/{product:slug}', [ProductsController::class, 'show'])->name('prod.show');
-Route::get('/products', [ProductsController::class, 'index'])->name('products-show');
+
+Route::get('/productss', [ProductsController::class, 'index'])->name('products-show');
+
+
 Route::get('/store/{store:slug}', [StoresController::class, 'showProducts'])
 ->name('store.products');
 Route::get('/categorystore/{store:slug}', [StoresController::class, 'showCategories'])
