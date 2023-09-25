@@ -75,7 +75,7 @@ class AuthController extends Controller
         // Validate user login data
         $validator = Validator::make($request->all(), [
             'email' => 'required|string|email|max:255',
-            'password' => 'required|string|min:6',
+            'password' => 'required|string',
         ]);
 
         $credentials = [
@@ -115,9 +115,9 @@ class AuthController extends Controller
       {
         $user = $request->user();
         $user->currentAccessToken()->delete();
-        return response()->json(['message' => 'Logged out successfully']);  
-        
-        
-    }   
+        return response()->json(['message' => 'Logged out successfully']);
+
+
+    }
 
 }
