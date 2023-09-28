@@ -30,13 +30,16 @@ class AuthController extends Controller
         ]);
         // $errors = $validator->errors();
         // $errorMessages = $errors->all();
-        $errorMessages = $validator->errors()->all();
+        // $errorMessages = $validator->errors()->all();
 
-        // دمج الأخطاء إلى نص واحد بفصلها بفاصلة
-        $errorText = implode(', ', $errorMessages);
+        // // دمج الأخطاء إلى نص واحد بفصلها بفاصلة
+        // $errorText = implode(', ', $errorMessages);
 
+        // if ($validator->fails()) {
+        //     return $this->apiResponse('', $errorText , 422);
+        // }
         if ($validator->fails()) {
-            return $this->apiResponse('', $errorText , 422);
+            return response()->json(['errors' => $this->error_processor($validator)], 422);
         }
 
         $data = $request->except('image');
