@@ -19,7 +19,7 @@ use App\Http\Controllers\Front\CategoriesController;
 use App\Http\Controllers\Front\CartController;
 use App\Http\Controllers\Front\StorController;
 use App\Http\Controllers\Front\CheckOutController;
-use App\Http\Controllers\front\StoresController;
+use App\Http\Controllers\Front\StoresController;
 use App\Http\Controllers\Front\CategoryStoreController;
 
 
